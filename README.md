@@ -3,9 +3,9 @@
 ## Topics
 This Client Auth lab will be touching on the following topics:
  * Client-side authentication via sessions and JSON web tokens
- * CORS (Cross Origin Resource Sharing)
- * Using localStorage for client-side persistence
- * React Higher Order Components
+ * [CORS (Cross Origin Resource Sharing)](https://en.wikipedia.org/wiki/Cross-origin_resource_sharing)
+ * Using [localStorage](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage) for client-side persistence
+ * [React Higher Order Components](https://facebook.github.io/react/docs/higher-order-components.html)
 
 ## Description
 In this mini lab, we'll be extending the servers that we built in the Auth lab in order to prepare for the main lab.
@@ -31,3 +31,5 @@ _look_ like.
 good job of comparing and contrasting the usage of JSON web tokens and server-side sessions. 
 [http://restlet.com/company/blog/2015/12/15/understanding-and-using-cors/](http://restlet.com/company/blog/2015/12/15/understanding-and-using-cors/): This one
 is long and a bit dense, but is packed with lots of great info on the underlying mechanisms that power CORS.
+[https://www.robinwieruch.de/gentle-introduction-higher-order-components/](https://www.robinwieruch.de/gentle-introduction-higher-order-components/): Another 
+long and dense one, this one all about React higher-order components. Lots of good stuff in this one. 
