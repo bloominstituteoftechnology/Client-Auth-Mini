@@ -40,4 +40,5 @@ good job of comparing and contrasting the usage of JSON web tokens and server-si
 is long and a bit dense, but is packed with lots of great info on the underlying mechanisms that power CORS.
 
 [https://www.robinwieruch.de/gentle-introduction-higher-order-components/](https://www.robinwieruch.de/gentle-introduction-higher-order-components/): Another 
-long and dense one, this one all about React higher-order components. Lots of good stuff in this one. 
+long and dense one, this one all about React higher-order components. Lots of good stuff in this one, though only about the first half (before he starts talking
+about the `recompose` library) is most applicable to our use case.  
