@@ -6,6 +6,7 @@
 This Client Auth lab will be touching on the following topics:
  * Client-side authentication via sessions and JSON web tokens
  * [CORS (Cross Origin Resource Sharing)](https://en.wikipedia.org/wiki/Cross-origin_resource_sharing)
+   * https://github.com/expressjs/cors
  * Using [localStorage](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage) for client-side persistence
  * [React Higher Order Components](https://facebook.github.io/react/docs/higher-order-components.html)
 
@@ -14,10 +15,20 @@ In this mini lab, we'll be extending the server that we built in the Auth lab in
 
 ### Todos
  * Navigate to your Auth sprint repository - Copied to this project, OKAY √
- * Change the name of your `log-in` route to `login`. - OKAY √
- * Add a `logout` POST route that removes the user from the session
- * If you didn't get around to the extra credit of adding a `/restricted/users` route along with the appropriate middleware, now's your chance to add that
- * Run `npm install --save-dev cors` to install the node CORS middleware, then somewhere at the top of `server.js`, add `server.use(cors());`
+ * Change the name of your `log-in` route to `login`. - DONE √
+ * Add a `logout` POST route that removes the user from the session - Already DONE √
+ * If you didn't get around to the extra credit of adding a `/restricted/users` route along with the appropriate middleware, now's your chance to add that - Already DONE √
+ * Run `npm install --save-dev cors` to install the node CORS middleware. - DONE √
+  ```console
+  $  npm install --save-dev cors
+      npm WARN eslint-config-airbnb@14.1.0 requires a peer of eslint-plugin-jsx-a11y@^3.0.2 || ^4.0.0 but none was ins talled.
+      npm WARN eslint-config-airbnb@14.1.0 requires a peer of eslint-plugin-react@^6.9.0 but none was installed.
+      npm WARN ls-auth@0.0.1 No repository field.
+
+      + cors@2.8.4
+      added 1 package in 4.62s
+  ```
+ * Then somewhere at the top of `server.js`, add `server.use(cors());` and `const cors = require('cors');`
  * Test your routes in Postman to ensure that they still work as expected
 
 While typically we wouldn't want to add the CORS middleware to every single route in a production API, for the client auth lab, we'll be using most of the
