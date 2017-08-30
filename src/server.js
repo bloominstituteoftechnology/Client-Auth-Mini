@@ -1,7 +1,7 @@
 const bodyParser = require('body-parser');
 const express = require('express');          // https://www.npmjs.com/package/express
 const session = require('express-session');  // https://www.npmjs.com/package/express-session
-const cors = require('cors');                  // https://github.com/expressjs/cors
+const cors = require('cors');                // https://github.com/expressjs/cors
 
 const User = require('./user');   // <~~~ added
 const bcrypt = require('bcrypt'); // <~~~ added https://www.npmjs.com/package/bcrypt
@@ -13,7 +13,7 @@ const BCRYPT_COST = 11;
 
 const server = express();
 
-server.use(cors());
+server.use(cors());               // <~~~ added
 
 server.use(bodyParser.json()); // <~~~ Higher Order Function
 
