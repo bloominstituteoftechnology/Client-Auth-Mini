@@ -69,7 +69,7 @@ server.post('/users', confirmNameAndPassword, (req, res) => {
   });
 });
 // LOGIN IN "REGISTERED" USER
-server.post('/log-in', confirmNameAndPassword, (req, res) => {
+server.post('/login', confirmNameAndPassword, (req, res) => {
   const { username, password } = req.body;
   User.findOne({ username })
   .exec()
