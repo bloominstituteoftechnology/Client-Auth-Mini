@@ -1,5 +1,7 @@
 # Client Auth Mini
 
+[Lecture video link](https://www.youtube.com/watch?v=sqf1bh7kD3I&feature=youtu.be)
+
 ## Topics
 This Client Auth lab will be touching on the following topics:
  * Client-side authentication via sessions and JSON web tokens
