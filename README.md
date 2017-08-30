@@ -8,7 +8,7 @@ This Client Auth lab will be touching on the following topics:
  * [React Higher Order Components](https://facebook.github.io/react/docs/higher-order-components.html)
 
 ## Description
-In this mini lab, we'll be extending the servers that we built in the Auth lab in order to prepare for the main lab.
+In this mini lab, we'll be extending the server that we built in the Auth lab in order to prepare for the main lab.
 
 ### Todos
  * Change the name of your `log-in` route to `login` 
