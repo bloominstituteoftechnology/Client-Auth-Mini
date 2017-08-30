@@ -13,7 +13,7 @@ const BCRYPT_COST = 11;
 
 const server = express();
 
-server.use(cors());               // <~~~ added
+server.use(cors());               // <~~~ added GLOBAL CORS
 
 server.use(bodyParser.json()); // <~~~ Higher Order Function
 
