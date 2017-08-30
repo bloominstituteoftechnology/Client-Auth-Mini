@@ -11,10 +11,11 @@ This Client Auth lab will be touching on the following topics:
 In this mini lab, we'll be extending the server that we built in the Auth lab in order to prepare for the main lab.
 
 ### Todos
+ * Navigate to your Auth sprint repository
  * Change the name of your `log-in` route to `login` 
  * Add a `logout` POST route that removes the user from the session
- * If you didn't get around to the extra credit of adding a `/restricted/users` route along with the appropriate middleware, now's your chance to add that.
- * Run `npm install --save-dev cors` to install the node CORS middleware, then somewhere at the top of `server.js`, add `server.use(cors());`.
+ * If you didn't get around to the extra credit of adding a `/restricted/users` route along with the appropriate middleware, now's your chance to add that
+ * Run `npm install --save-dev cors` to install the node CORS middleware, then somewhere at the top of `server.js`, add `server.use(cors());`
  * Test your routes in Postman to ensure that they still work as expected
 
 While typically we wouldn't want to add the CORS middleware to every single route in a production API, for the client auth lab, we'll be using most of the 
