@@ -31,13 +31,13 @@ In this mini lab, we'll be extending the server that we built in the Auth lab in
  * Then somewhere at the top of `server.js`, add `server.use(cors());` and `const cors = require('cors');` - DONE √
  * Test your routes in Postman to ensure that they still work as expected - DONE √
 
-While **typically we wouldn't want to add the CORS middleware to every single route in a production API**, for the client auth lab, we'll be using most of the
-routes in our auth server, so it's easier to just add it to the entire server. Feel free to add the CORS middleware locally to each route if you'd like.
+While **typically we wouldn't want to add the CORS middleware to every single route in a production API**, for the client auth lab, we'll be using most of the routes in our auth server, so it's easier to just add it to the entire server. - OKAY √
+
+Feel free to add the CORS middleware locally to each route if you'd like. - DONE √
 
 ---
 
-Overall, not that much going on in this particular mini lab. It was kind of hard to come up with a mini lab exercise that could touch on all of the topics
-that we'll be covering in this lab without bloating the scope of the exercise too much.
+Overall, not that much going on in this particular mini lab. It was kind of hard to come up with a mini lab exercise that could touch on all of the topics that we'll be covering in this lab without bloating the scope of the exercise too much.
 
 If you finished that quickly and are just sitting around twiddling your thumbs now, here are a few good articles to read:
 
