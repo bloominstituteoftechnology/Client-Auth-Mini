@@ -39,12 +39,12 @@ app.post('/users', (req, res) => {
 
     const user = new User({ username, password: hash });
 
-    user.save((err, user) => {
-      if (err) {
-        sendUserError(err, res);
+    user.save((error, theUser) => {
+      if (error) {
+        sendUserError(error, res);
         return;
       }
-      res.json(user);
+      res.json(theUser);
     });
   });
 });
@@ -88,8 +88,8 @@ app.post('/login', (req, res) => {
 
 app.post('/log-out', (req, res) => {
   if (!req.session.username) {
-      sendUserError('Must be logged in', res);
-      return;
+    sendUserError('Must be logged in', res);
+    return;
   }
 
   req.session.username = null;
