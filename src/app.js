@@ -2,7 +2,7 @@
 const { server } = require('./server.js');
 const mongoose = require('mongoose');
 
-const PORT = 3000;
+const PORT = 5000;
 
 server.listen(PORT, () => {
   console.log(`Auth project started @ port ${PORT}`);
