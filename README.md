@@ -1,52 +1,82 @@
-# Client Auth Mini
-
-[Lecture video link](https://www.youtube.com/watch?v=sqf1bh7kD3I&feature=youtu.be)
-
-## Topics
-This Client Auth lab will be touching on the following topics:
- * Client-side authentication via sessions and JSON web tokens
- * [CORS (Cross Origin Resource Sharing)](https://en.wikipedia.org/wiki/Cross-origin_resource_sharing)
- * Using [localStorage](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage) for client-side persistence
- * [React Higher Order Components](https://facebook.github.io/react/docs/higher-order-components.html)
+# Auth Lab
+Topics:
+  * Express Middleware
+  * Sessions
+  * Passwords
+  * Authentication
 
 ## Description
-In this mini lab, we'll be extending the server that we built in the Auth lab in order to prepare for the main lab.
+In the lecture, we presented three seemingly disparate concepts: middleware,
+sessions, and passwords. For this lab, your job will be to combine these
+concepts into one authentication system.
 
-### Todos
- * Navigate to your Auth sprint repository
- * Change the name of your `log-in` route to `login` 
- * Add a `logout` POST route that removes the user from the session
- * If you didn't get around to the extra credit of adding a `/restricted/users` route along with the appropriate middleware, now's your chance to add that
- * Change the port number that your server connects to in `app.js` to 5000
- * Run `npm install --save-dev cors` to install the node CORS middleware, then somewhere at the top of `server.js`, add  
-```
- const corsOptions = {
-     "origin": "http://localhost:3000",
-     "credentials": true
- };
- server.use(cors(corsOptions));
- ```
- * Test your routes in Postman to ensure that they still work as expected
+## Running the Project
+- Run `npm install` to download the dependencies.
+- Keep `mongod --dbpath data` running in its own terminal.
+- Run `npm test` to run the tests. If you'd like, you can run `npm run watch`
+  to automatically re-reun the tests when you make modifications.
+- To test your application in your browser, or by using
+  [Postman](https://www.getpostman.com/), make sure you've installed `nodemon`
+  via `npm install -g nodemon` and then run `nodemon src/app.js`. `nodemon` will
+  keep the server running and automatically restart it if you change anything.
+  You can now make requests to `http://localhost:3000` in your browser or
+  Postman!
+- Make modifications to `src/user.js` and `src/server.js` to make the tests pass.
+- If you'd like, feel free to reference the tests in `tests/server.test.js` as
+  you're developing.
+- Once all tests have passed, you're done! Send us a pull request.
 
-While typically we wouldn't want to add the CORS middleware to every single route in a production API, for the client auth lab, we'll be using most of the 
-routes in our auth server, so it's easier to just add it to the entire server. Feel free to add the CORS middleware locally to each route if you'd like. 
+## Instructions
+### `src/user.js`
+First, write the schema for the user model in `src/user.js`. Each user has two
+properties: `username`, a String, and `passwordHash`, also a String. Both
+properties are required, and the username should be unique (use the option
+`unique: true`).  This prevents two users from having the same username.
 
----
+### `src/server.js`
+Now start editing `src/server.js`. Note that we've provided you a helper
+function `sendUserError()` that can send down either an object error or a string
+error. You'll use this liberally in your routes.
 
-Overall, not that much going on in this particular mini lab. It was kind of hard to come up with a mini lab exercise that could touch on all of the topics
-that we'll be covering in this lab without bloating the scope of the exercise too much. 
+We've also gone ahead and initialized the express-session middleware so you can
+use the client-specific, persistent `req.session` object in your route handlers.
 
-If you finished that quickly and are just sitting around twiddling your thumbs now, here are a few good articles to read:
+### `POST /users`
+The `POST /users` route expects two parameters: `username` and `password`. When
+the client makes a `POST` request to `/users`, hash the given password and
+create a new user in MongoDB. Send the user object as a JSON response.
 
-[https://scotch.io/tutorials/the-anatomy-of-a-json-web-token](https://scotch.io/tutorials/the-anatomy-of-a-json-web-token): Some cool analysis on what JWTs
-_look_ like.
+Make sure to do proper validation and error checking. If there's any error,
+respond with an appropriate status and error message using the `sendUserError()`
+helper function.
 
-[https://ponyfoo.com/articles/json-web-tokens-vs-session-cookies](https://ponyfoo.com/articles/json-web-tokens-vs-session-cookies): This article does a pretty
-good job of comparing and contrasting the usage of JSON web tokens and server-side sessions. 
+### `POST /log-in`
+The `POST /log-in` route expects two parameters: `username` and `password`. When
+the client makes a `POST` request to `/log-in`, check the given credentials and
+log in the appropriate user. Send the object `{ success: true }` as a JSON
+response if everything works out.
 
-[http://restlet.com/company/blog/2015/12/15/understanding-and-using-cors/](http://restlet.com/company/blog/2015/12/15/understanding-and-using-cors/): This one
-is long and a bit dense, but is packed with lots of great info on the underlying mechanisms that power CORS.
+You'll need to use a session to track who is logged in. Do **NOT** store the
+entire user object in the session; if the user in MongoDB gets updated or
+deleted, the session will not reflect the changes. Instead, store some
+information that will let you uniquely identify which user is logged in.
 
-[https://www.robinwieruch.de/gentle-introduction-higher-order-components/](https://www.robinwieruch.de/gentle-introduction-higher-order-components/): Another 
-long and dense one, this one all about React higher-order components. Lots of good stuff in this one, though only about the first half (before he starts talking
-about the `recompose` library) is most applicable to our use case.  
+Make sure to do proper validation and error checking. If there's any error, or
+if the credentials are invalid, respond with an appropriate status and error
+message using the `sendUserError()` helper function.
+
+### `GET /me`
+The `GET /me` route **should only be accessible by logged in users**. We've
+already implemented the route handler for you; your job is to add local
+middleware to ensure that only logged in users have access.
+
+Make sure to do proper validation and error checking. If there's any error, or
+if no user is logged in, respond with an appropriate status and error message
+using the `sendUserError()` helper function.
+
+## Extra Credit
+If you'd like to go a step further, write a piece of **global** middleware that
+ensures a user is logged in when accessing *any* route prefixed by
+`/restricted/`. For instance, `/restricted/something`, `/restricted/other`, and
+`/restricted/a` should all be protected by the middleware; only logged in users
+should be able to access these routes.
