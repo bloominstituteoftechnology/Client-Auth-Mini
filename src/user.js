@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { hashPassword } = require('./utils/passwordHash');
+const { hashPassword, comparePassword } = require('./utils/passwordHash');
 
 // Clear out mongoose's model cache to allow --watch to work for tests:
 // https://github.com/Automattic/mongoose/issues/1251
@@ -29,6 +29,15 @@ UserSchema.pre('save', async function handlePasswordHash(next) {
     next(error);
   }
 });
+
+UserSchema.methods.checkPassword = async function checkPassword(password) {
+  try {
+    const match = await comparePassword(password, this.passwordHash);
+    return match;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
 
 module.exports = mongoose.model('User', UserSchema);
 

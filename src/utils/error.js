@@ -6,6 +6,7 @@ module.exports = {
   sendUserError: (err, res) => {
     res.status(STATUS_USER_ERROR);
     if (err && err.message) {
+      console.log('error util', err.message)
       res.json({ message: err.message, stack: err.stack });
     } else {
       res.json({ error: err });
