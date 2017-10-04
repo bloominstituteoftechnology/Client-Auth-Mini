@@ -1,40 +1,47 @@
 const User = require('../user');
-const { sendSafeUser } = require('../utils/response');
 const { sendUserError } = require('../utils/error');
-const { comparePassword } = require('../utils/passwordHash');
+
+const generateUserToken = require('../utils/jwtToken');
 
 module.exports = {
+
   registerUser: async (req, res) => {
     const { username, password: passwordHash } = req.body;
     const newUser = new User({ username, passwordHash });
     try {
       const success = await newUser.save();
+      
       /* eslint no-underscore-dangle: 0 */
-      req.session.user = success._id;
-      sendSafeUser(success, res);
+      res.send({
+        token: await generateUserToken({
+          _id: success._id,
+          username: success.username
+        })
+      });
     } catch (error) {
       sendUserError(error, res);
     }
   },
+
   loginUser: async (req, res) => {
     const { username, password } = req.body;
     try {
-      const foundUser = await User.findOne({ username });
-      if (foundUser) {
-        const passwordMatch = await comparePassword(password, foundUser.passwordHash);
-        if (passwordMatch) {
-          req.session.user = foundUser._id;
-          return sendSafeUser(foundUser, res);
-        }
-        return sendUserError('Incorrect password', res);
-      }
-      sendUserError('User does not exist', res);
+      if (!username || !password) throw new Error('username and password required');
+
+      const user = await User.findOne({ username });
+      if (!user) throw new Error('not a valid username / password combination');
+
+      const passwordMatch = await user.checkPassword(password);
+      if (!passwordMatch) throw new Error('not a valid username / password combination');
+
+      const token = await generateUserToken({ username, password });
+      res.send({ token });
     } catch (error) {
-      sendUserError(error, res);
+      sendUserError(error.message, res);
     }
   },
-  logoutUser: async (req, res) => {
-    delete req.session.user;
+
+  logoutUser: (req, res) => {
     return res.json({ success: 'User logged out' });
   }
 };
