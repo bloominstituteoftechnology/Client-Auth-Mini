@@ -12,7 +12,7 @@ module.exports = {
       const success = await newUser.save();
       
       /* eslint no-underscore-dangle: 0 */
-      res.send({
+      res.json({
         token: await generateUserToken({
           _id: success._id,
           username: success.username
@@ -34,8 +34,8 @@ module.exports = {
       const passwordMatch = await user.checkPassword(password);
       if (!passwordMatch) throw new Error('not a valid username / password combination');
 
-      const token = await generateUserToken({ username, password });
-      res.send({ token });
+      const token = await generateUserToken({ _id: user._id, username });
+      res.json({ token });
     } catch (error) {
       sendUserError(error.message, res);
     }
