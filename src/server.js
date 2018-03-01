@@ -92,7 +92,7 @@ server.get('/me', checkLoggedIn, (req, res) => {
   res.json(req.user);
 });
 
-server.post('/users', (req, res) => {
+server.post('users', (req, res) => {
   const { username, password } = req.body;
   if (!username || !password) {
     res
@@ -140,7 +140,17 @@ server.post('/logout', (req, res) => {
   req.session.loggedIn = null;
   req.session.username = null;
   res.json({ success: 'You have been logged out.' });
-})
+});
+
+server.get('/restricted/users', (req, res) => {
+  User.find()
+    .then(users => {
+      res.json(users);
+    })
+    .catch(error => {
+      res.json('Must log in to view users');
+    })
+});
 
 server.get('/restricted/something', (req, res) => {
   res.json({
