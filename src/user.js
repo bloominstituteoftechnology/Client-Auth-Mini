@@ -18,12 +18,12 @@ const UserSchema = new mongoose.Schema({
   username: {
     type: String,
     unique: true,
-    required: true,
+    required: true
   },
   passwordHash: {
     type: String,
-    required: true,
-  },
+    required: true
+  }
 });
 
 UserSchema.pre('save', function(next) {

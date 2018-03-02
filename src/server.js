@@ -52,12 +52,13 @@ server.post('/login', (req, res) => {
 });
 
 server.post('/logout', (req, res) => {
-  if (!req.session.username) {
+  if (!req.session) {
     middleware.sendUserError('User is not logged in', res);
     return;
   }
-  req.session.username = null;
-  res.json(req.session);
+
+  req.session.destroy();
+  res.sendStatus(200);
 });
 
 server.post('/users', (req, res) => {
@@ -95,7 +96,7 @@ const checkIfLoggedIn = (req, res, next) => {
   });
 };
 
-server.get('/me', checkIfLoggedIn, (req, res) => {
+server.get('/users', checkIfLoggedIn, (req, res) => {
   // Do NOT modify this route handler in any way.
   res.send(req.user);
 });
@@ -110,9 +111,9 @@ server.use((req, res, next) => {
   next();
 });
 
-server.get('/restricted/something', (req, res) => {
-  res.json({
-    message: `something restricted accessed by ${req.user.username}`
+server.get('/restricted/users', (req, res) => {
+  User.find({}).then(users => {
+    res.send(users);
   });
 });
 
