@@ -115,4 +115,14 @@ server.get('/me', authenticate, (req, res) => {
   res.json(req.user);
 });
 
+server.get('/restricted/users', (req, res) => {
+  User.find({})
+    .then((users) => {
+      res.status(200).json(users);
+    })
+    .catch((err) => {
+      sendUserError('There was an error', res);
+    });
+});
+
 module.exports = { server };
