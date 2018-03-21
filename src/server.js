@@ -78,6 +78,15 @@ server.post('/login', (req, res) => {
     });
 });
 
+server.post('/logout', (req, res) => {
+  if (req.session.loggedIn) {
+    console.log(req.session);
+    req.session.loggedIn = null;
+    console.log(req.session);
+    res.status(200).json({ message: 'The user is now logged out' });
+  } else sendUserError('There are no users logged in', res);
+});
+
 server.get('/restricted', (req, res) => {
   res.status(200).json({ message: 'You have accessed the restricted content' });
 });
