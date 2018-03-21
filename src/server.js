@@ -2,6 +2,7 @@ const bodyParser = require('body-parser');
 const express = require('express');
 const session = require('express-session');
 const bcrypt = require('bcrypt');
+const cors = require('cors');
 const User = require('./user.js');
 
 const STATUS_USER_ERROR = 422;
@@ -14,6 +15,12 @@ server.use(session({
   resave: true,
   saveUninitialized: false,
 }));
+
+const corsOptions = {
+  origin: 'http://localhost:3000',
+  credentials: true,
+};
+server.use(cors(corsOptions));
 
 const sendUserError = (err, res) => {
   res.status(STATUS_USER_ERROR);
