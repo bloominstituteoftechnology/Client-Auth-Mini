@@ -53,7 +53,7 @@ server.post('/users', (req, res) => {
     });
 });
 
-server.post('/log-in', (req, res) => {
+server.post('/login', (req, res) => {
   let { username } = req.body;
   const { password } = req.body;
   if (!username || !password) {
