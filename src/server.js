@@ -10,8 +10,10 @@ const cors = require("cors");
 const STATUS_USER_ERROR = 422;
 const BCRYPT_COST = 11;
 
+
 //importing models
 const UserModel = require("./user");
+
 
 const server = express();
 // to enable parsing of json bodies for post requests
@@ -22,14 +24,42 @@ server.use(session({
   saveUninitialized: true,
 }));
 
+
 //initialized mongoose
 mongoose.connect("mongodb://localhost:27017/Users", {useMongoClient: true});
 mongoose.connection
 .once("open", () => console.log(`Mongoose is open`))
 .on("error", (err) => console.log(`There was an error: \n ${err}`))
 
+
 //setup promises in mongoose
 mongoose.Promise = global.Promise;
+
+//creating and initializing that requires login for all urls with /restricted in them
+// const restrictMid = (req, res, next) => {
+//   const newPath = req.path;
+//   const reg = newPath.match(/restricted/g);
+//   if (req.session.loggedIn === undefined){
+//     req.session.loggedIn = false;
+//   }
+//   if (reg && req.session.loggedIn){
+//     console.log(`User is logged in and can view restricted content`);
+//     next();
+//   } else if (!reg && req.session.loggedIn){
+//     console.log(`User is logged in but not trying to view restricted content`);
+//     next();
+//   } else if (reg && !req.session.loggedIn) {
+//     console.log(`User not logged in and is trying to view restricted content`);
+//     res.status(401);
+//     res.send(`This page is restricted, please log in to gain access`);
+//     return;
+//   } else if (!req && !req.session.loggedIn){
+//     console.log(`user is not logged in and is not trying to view restricted content.`);
+//     res.status(401);
+//     next();
+// }
+// }
+// server.use(restrictMid);
 
 //creating middleware to check if the user is logged in
 const loginMiddleware = (req, res, next) => {
@@ -37,12 +67,12 @@ const loginMiddleware = (req, res, next) => {
     console.log(`User not logged in`);
     res.status(401);
     res.send(`User not logged in`);
-  } else if (req.session.loggedIn) {
+  } else if (req.session.loggedIn){
     console.log(`The user is logged in and can access the data`);
     res.status(200);
-    next();
   }
 }
+
 
 //initializing the cors middleware
 const corsOptions = {
@@ -62,20 +92,7 @@ const sendUserError = (err, res) => {
   }
 };
 
-//creating and initializing that requires login for all urls with /restricted in them
-const restrictMid = (req, res, next) => {
-  const newPath = req.path;
-  const reg = /restricted/.test(newPath);
-  console.log(reg);
-  if (reg && res.session.loggedIn){
-    console.log(`User is logged in`);
-    next();
-  } else {
-    next();
-  }
-}
 
-server.use(restrictMid);
 // TODO: implement routes
 
 //handler for the users route that creates a new users and hashes their password
@@ -159,7 +176,8 @@ module.exports = { server };
 
 //route handler to test if the middleware that allows access to restricted content work
 server.get("/restricted/test", (req, res) => {
-  console.log(req.path);
+  console.log(req.session.loggedIn);
+  res.send(`Path: ${req.path}; status: ${req.session.loggedIn}`);
 })
 
 //theatticus82/pass123
