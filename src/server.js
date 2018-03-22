@@ -44,6 +44,13 @@ const loginMiddleware = (req, res, next) => {
   }
 }
 
+//initializing the cors middleware
+const corsOptions = {
+  "origin": "http://localhost:3000",
+  "credentials": true
+};
+server.use(cors(corsOptions))
+
 /* Sends the given err, a string or an object, to the client. Sets the status
  * code appropriately. */
 const sendUserError = (err, res) => {
@@ -126,6 +133,14 @@ server.get('/me', loginMiddleware, (req, res) => {
   res.json(req.user);
 });
 
+
+//post handler to log out the user
+server.post("/logout", (req, res) => {
+  req.session.loggedIn = false;
+  console.log(`The user has successfully signed out`);
+  res.status(200);
+  res.send(`The user has successfully signed out`)
+})
 module.exports = { server };
 
 
