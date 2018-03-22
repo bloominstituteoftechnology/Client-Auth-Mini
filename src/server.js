@@ -4,6 +4,7 @@ const express = require('express');
 const session = require('express-session');
 const bcrypt = require("bcrypt");
 const mongoose = require('mongoose');
+const cors = require("cors");
 
 
 const STATUS_USER_ERROR = 422;
@@ -83,7 +84,7 @@ server.post("/users", (req, res) => {
 });
 
 //handler for the log-in route
-server.post("/log-in", (req, res) => {
+server.post("/login", (req, res) => {
   const loginUsername = req.body.username;
   const loginPassword = req.body.password;
   
