@@ -66,17 +66,16 @@ const sendUserError = (err, res) => {
 const restrictMid = (req, res, next) => {
   const newPath = req.path;
   const reg = /restricted/.test(newPath);
-  if (req){
+  console.log(reg);
+  if (reg && res.session.loggedIn){
     console.log(`User is logged in`);
     next();
   } else {
-    console.log(`User is not logged in`);
-    res.status(401);
-    res.send(`Access denied: user not logged in`);
+    next();
   }
 }
 
-server.use(restrictMid());
+server.use(restrictMid);
 // TODO: implement routes
 
 //handler for the users route that creates a new users and hashes their password
