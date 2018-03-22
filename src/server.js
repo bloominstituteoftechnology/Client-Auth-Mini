@@ -62,6 +62,21 @@ const sendUserError = (err, res) => {
   }
 };
 
+//creating and initializing that requires login for all urls with /restricted in them
+const restrictMid = (req, res, next) => {
+  const newPath = req.path;
+  const reg = /restricted/.test(newPath);
+  if (req){
+    console.log(`User is logged in`);
+    next();
+  } else {
+    console.log(`User is not logged in`);
+    res.status(401);
+    res.send(`Access denied: user not logged in`);
+  }
+}
+
+server.use(restrictMid());
 // TODO: implement routes
 
 //handler for the users route that creates a new users and hashes their password
@@ -143,5 +158,9 @@ server.post("/logout", (req, res) => {
 })
 module.exports = { server };
 
+//route handler to test if the middleware that allows access to restricted content work
+server.get("/restricted/test", (req, res) => {
+  console.log(req.path);
+})
 
 //theatticus82/pass123
