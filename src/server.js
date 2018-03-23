@@ -24,6 +24,7 @@ server.use(session({
   saveUninitialized: true,
 }));
 
+//req.session.example = "test";
 
 //initialized mongoose
 mongoose.connect("mongodb://localhost:27017/Users", {useMongoClient: true});
@@ -36,30 +37,29 @@ mongoose.connection
 mongoose.Promise = global.Promise;
 
 //creating and initializing that requires login for all urls with /restricted in them
-// const restrictMid = (req, res, next) => {
-//   const newPath = req.path;
-//   const reg = newPath.match(/restricted/g);
-//   if (req.session.loggedIn === undefined){
-//     req.session.loggedIn = false;
-//   }
-//   if (reg && req.session.loggedIn){
-//     console.log(`User is logged in and can view restricted content`);
-//     next();
-//   } else if (!reg && req.session.loggedIn){
-//     console.log(`User is logged in but not trying to view restricted content`);
-//     next();
-//   } else if (reg && !req.session.loggedIn) {
-//     console.log(`User not logged in and is trying to view restricted content`);
-//     res.status(401);
-//     res.send(`This page is restricted, please log in to gain access`);
-//     return;
-//   } else if (!req && !req.session.loggedIn){
-//     console.log(`user is not logged in and is not trying to view restricted content.`);
-//     res.status(401);
-//     next();
-// }
-// }
-// server.use(restrictMid);
+const restrictMid = (req, res, next) => {
+  if (req.session.loggedIn === undefined){
+    req.session.loggedIn = false;
+  }
+  
+  const path = req.path.split("/");
+  if (path[1] === "restricted"){
+    if (req.session.loggedIn){
+      console.log(`The user is logged in and can access the restricted content`);
+      res.status(200);
+      next();
+    } else {
+      console.log(`The user is not logged in and cannot access the restricted content`);
+      res.status(401);
+      res.send(`This content is restricted, please log in to access.`);
+    }
+  } else {
+    next();
+  }
+}
+
+server.use(restrictMid);
+
 
 //creating middleware to check if the user is logged in
 const loginMiddleware = (req, res, next) => {
@@ -70,6 +70,7 @@ const loginMiddleware = (req, res, next) => {
   } else if (req.session.loggedIn){
     console.log(`The user is logged in and can access the data`);
     res.status(200);
+    next();
   }
 }
 
@@ -161,7 +162,7 @@ server.post("/login", (req, res) => {
 // TODO: add local middleware to this route to ensure the user is logged in
 server.get('/me', loginMiddleware, (req, res) => {
   // Do NOT modify this route handler in any way.
-  res.json(req.user);
+  res.json({success: "ACCESS GRANTED"});
 });
 
 
@@ -177,7 +178,6 @@ module.exports = { server };
 //route handler to test if the middleware that allows access to restricted content work
 server.get("/restricted/test", (req, res) => {
   console.log(req.session.loggedIn);
-  res.send(`Path: ${req.path}; status: ${req.session.loggedIn}`);
+  res.status(200);
+  res.json({success: "ACCESS GRANTED"});
 })
-
-//theatticus82/pass123
