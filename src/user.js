@@ -14,21 +14,18 @@ mongoose.connect('mongodb://localhost/users');
 const UserSchema = new mongoose.Schema({
   // TODO: fill in this schema
   username: { type: String, required: true, unique: true, lowercase: true },
-  passwordHash: { type: String, required: [true, 'Must provide a password'] }
+  password: { type: String, required: [true, 'Must provide a password'] }
 });
 
 UserSchema.pre('save', function (next) {
-  bcrypt.hash(this.passwordHash, BCRYPT_COST).then((hashedPassword) => {
-    this.passwordHash = hashedPassword;
+  bcrypt.hash(this.password, BCRYPT_COST).then((hashedPassword) => {
+    this.password = hashedPassword;
     next();
   });
 });
 
-UserSchema.methods.checkPassword = function (potentialPassword, hashedPassword, cb) {
-  console.log(`potentialPassword line 28`, potentialPassword);
-  console.log(`hashedPassword line 32`, hashedPassword)
-  bcrypt.compare(potentialPassword, hashedPassword, (err, isMatch) => {
-    console.log(`Did we get here?`, potentialPassword);
+UserSchema.methods.checkPassword = function (potentialPassword, cb) {
+  bcrypt.compare(potentialPassword, this.password, (err, isMatch) => {
     if (err) return err;
     cb(null, isMatch);
   });

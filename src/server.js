@@ -1,11 +1,9 @@
 const express = require('express');
 const session = require('express-session');
-const bcrypt = require('bcrypt');
 const cors = require('cors');
 const User = require('./user.js');
 
 const STATUS_USER_ERROR = 422;
-const BCRYPT_COST = 11;
 
 const server = express();
 server.use(express.json());
@@ -22,20 +20,6 @@ server.use(session({
 }));
 
 const auth = (req, res, next) => {
-  // console.log(req.session);
-  // if (req.session.loggedIn) {
-  //   User.findById(req.session.loggedIn)
-  //     .then((user) => {
-  //       req.user = user;
-  //       next();
-  //     })
-  //     .catch((err) => {
-  //       console.error(err);
-  //     });
-  // } else {
-  //   res.status(STATUS_USER_ERROR).send({ message: 'You are not logged in' });
-  // }
-
   User.find({ username: req.session.user })
   .then(activeUser => {
     if (activeUser.length) {
@@ -62,12 +46,8 @@ const sendUserError = (err, res) => {
 };
 
 server.post('/users', (req, res) => {
-  const userInfo = req.body; // body parser?
-  bcrypt.hash(userInfo.passwordHash, 11, (hashErr, hashedPw) => {
-    if (hashErr) throw new Error(hashErr);
-
-    userInfo.passwordHash = hashedPw;
-    const user = new User(userInfo);
+  const userInfo = req.body;
+  const user = new User(userInfo);
     user
       .save()
       .then((savedUser) => {
@@ -80,14 +60,12 @@ server.post('/users', (req, res) => {
           .status(500)
           .json({ MESSAGE: 'There was an error saving the user' });
       });
-  });
 });
 
 server.post('/login', (req, res) => {
-  //const { username, passwordHash } = req.body;
   const session = req.session;
   const username = req.body.username.toLowerCase();
-  const potentialPW = req.body.passwordHash;
+  const potentialPW = req.body.password;
 
   if (!potentialPW || !username) {
     sendUserError(`Username and password required`, res);
@@ -98,11 +76,9 @@ server.post('/login', (req, res) => {
     if (err) {
       return sendUserError(err);
     }
-    console.log(user.passwordHash);
-    user.checkPassword(potentialPW, user.passwordHash, (err, isMatch) => {
+    user.checkPassword(potentialPW, (err, isMatch) => {
       if (isMatch) {
         req.session.user = user.username;
-        console.log(req.session.user);
         req.session.loggedIn = true;
         res.status(200).json({ isLoggedIn: true });
       } else {
@@ -117,6 +93,10 @@ server.post('/login', (req, res) => {
     });
 });
 
+server.post('/logout', (req, res) => {
+  req.session.destroy();
+  res.status(200).json(`You have been logged out`);
+})
 
 server.get('/me', auth, (req, res) => {
   // Do NOT modify this route handler in any way.
@@ -124,20 +104,3 @@ server.get('/me', auth, (req, res) => {
 });
 
 module.exports = { server };
-
-  // User
-  //   .findOne({
-  //     username
-  //   })
-  //   .then((foundUser) => {
-  //     foundUser.checkPassword(potentialPW, (err, response) => {
-  //       if (response) {
-  //         req.session.username = username;
-  //         res.status(200).json({ success: true, user: req.session.username });
-  //       } else {
-  //         res
-  //           .status(500)
-  //           .json({ success: false });
-  //       }
-  //     });
-  //   })
