@@ -19,6 +19,8 @@ server.use(session({
   saveUninitialized: false,
 }));
 
+server.use(cors(corsSetUp));
+
 const auth = (req, res, next) => {
   User.find({ username: req.session.user })
   .then(activeUser => {
